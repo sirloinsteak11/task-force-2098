@@ -12,6 +12,8 @@ typedef struct player_data {
     char* rank;
     int exp;
     Soldier* soldier_roster;
+    int name_length;
+    int rank_length;
 
 } PlayerData;
 

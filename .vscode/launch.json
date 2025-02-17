@@ -9,7 +9,7 @@
             "name": "Game Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/game",
+            "program": "${workspaceFolder}/debug/game_debug",
             "args": ["savefile"],
             "cwd": "${workspaceFolder}",
             "externalConsole": false,

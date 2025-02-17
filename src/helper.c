@@ -18,11 +18,12 @@ char* alloc_string(char* string) {
         string_len++;
     }
 
-    char* dynam_string = (char*)malloc(string_len * sizeof(char));
+    char* dynam_string = (char*)malloc(string_len+1 * sizeof(char));
     
     for (int i = 0; string[i] != 0; i++) {
         dynam_string[i] = string[i];
     }
+    dynam_string[string_len] = '\0';
 
     return dynam_string;
 }

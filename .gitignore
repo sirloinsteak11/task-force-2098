@@ -1,0 +1,7 @@
+*.o
+game
+savefile
+debug
+release
+backup2
+backup

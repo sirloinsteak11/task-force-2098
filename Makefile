@@ -1,24 +1,62 @@
-CC = gcc
-CFLAGS = -g -Wall -fsanitize=address -fsanitize=undefined
+CC     = gcc
+CFLAGS = -Wall -Werror -Wextra
 
-SRC = $(wildcard ./*.c)
-OBJ = $(SRC:%.c=%.o)
+SRCS = $(wildcard src/*.c)
+OBJS = $(SRCS:%.c=%.o)
+EXE  = game
 
+DBGDIR = debug
+DBGEXE = $(DBGDIR)/$(EXE)_debug
+DBGOBJS = $(addprefix $(DBGDIR)/, $(OBJS))
+DBGCFLAGS = -g -O0 -DDEBUG -fsanitize=address -fsanitize=undefined
 
-TARGET = game
+RELDIR = release
+RELEXE = $(RELDIR)/$(EXE)
+RELOBJS = $(addprefix $(RELDIR)/, $(OBJS))
+RELCFLAGS = -O3 -DNDEBUG
 
-default: $(TARGET)
+.PHONY: all clean debug prep release remake clean_release clean_debug
 
-$(TARGET): $(OBJ)
-	$(CC) -o $@ $^
+# Default build
+default: prep release
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+all: prep release debug
 
-run: $(TARGET)
-	./$(TARGET)
+#
+# Debug rules
+#
+debug: prep $(DBGEXE)
 
-clean: 
-	rm $(TARGET) $(OBJ)
+$(DBGEXE): $(DBGOBJS)
+	$(CC) $(CFLAGS) $(DBGCFLAGS) -o $(DBGEXE) $^
 
-.PHONY: run clean
+$(DBGDIR)/%.o: %.c
+	$(CC) -c $(CFLAGS) $(DBGCFLAGS) -o $@ $<
+
+#
+# Release rules
+#
+release: $(RELEXE)
+
+$(RELEXE): $(RELOBJS)
+	$(CC) $(CFLAGS) $(RELCFLAGS) -o $(RELEXE) $^
+
+$(RELDIR)/%.o: %.c
+	$(CC) -c $(CFLAGS) $(RELCFLAGS) -o $@ $<
+
+#
+# Other rules
+#
+prep:
+	@mkdir -p $(DBGDIR)/src $(RELDIR)/src
+
+remake: clean all
+
+clean:
+	rm -rf $(RELDIR) $(DBGDIR)
+
+clean_release:
+	rm -rf $(RELDIR)
+
+clean_debug:
+	rm -rf $(DBGDIR)

@@ -29,11 +29,18 @@ int create_save_data(Soldier* soldier_array, PlayerData* player_data) {
     player_data->exp = 0;
     player_data->level = 0;
     player_data->rank = "LT CMDR";
+    player_data->name_length = strlen(player_data->team_name);
+    player_data->rank_length = strlen(player_data->rank);
 
     if (savefile != NULL) {
-        fwrite(player_data, sizeof(PlayerData), 1, savefile);
-        //fwrite(player_data->team_name, sizeof(team_name), 1, savefile);
-        //fwrite(player_data->soldier_roster, sizeof(ROSTER_LENGTH * sizeof(Soldier)), 1, savefile);
+        fwrite(&player_data->name_length, sizeof(int), 1, savefile);
+        fwrite(&player_data->rank_length, sizeof(int), 1, savefile);
+        fwrite(player_data->team_name, sizeof(char), strlen(player_data->team_name) + 1, savefile);
+        fwrite(player_data->rank, sizeof(char), strlen(player_data->rank) + 1, savefile);
+        fwrite(&player_data->level, sizeof(int), 1, savefile);
+        fwrite(&player_data->exp, sizeof(int), 1, savefile);
+        fwrite(player_data->soldier_roster, sizeof(Soldier), ROSTER_LENGTH, savefile);
+        
         fclose(savefile);
         return 1;
     } else {
@@ -47,7 +54,20 @@ int load_save_data(char* filename, PlayerData* player_data) {
     FILE* savefile = fopen(filename, "rb");
 
     if (savefile != NULL) {
-        fread(player_data, sizeof(PlayerData), 1, savefile);
+        fread(&player_data->name_length, sizeof(int), 1, savefile);
+        fread(&player_data->rank_length, sizeof(int), 1, savefile);
+
+        player_data->team_name = (char*)malloc(player_data->name_length+1 * sizeof(char));
+        player_data->rank = (char*)malloc(player_data->rank_length+1 * sizeof(char));
+
+        fread(player_data->team_name, sizeof(char), player_data->name_length + 1, savefile);
+        fread(player_data->rank, sizeof(char), player_data->rank_length + 1, savefile);
+        fread(&player_data->level, sizeof(int), 1, savefile);
+        fread(&player_data->exp, sizeof(int), 1, savefile);
+
+        player_data->soldier_roster = (Soldier*)malloc(ROSTER_LENGTH * sizeof(Soldier));
+        fread(player_data->soldier_roster, sizeof(Soldier), ROSTER_LENGTH, savefile);
+
         fclose(savefile);
         return 1;
     } else {
