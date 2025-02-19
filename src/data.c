@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <cjson/cJSON.h>
-
 #include "data.h"
 
 int create_save_data(Soldier* soldier_array, PlayerData* player_data) {

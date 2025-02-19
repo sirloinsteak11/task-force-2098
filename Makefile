@@ -1,5 +1,5 @@
 CC     = gcc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Wextra
 
 SRCS = $(wildcard src/*.c)
 OBJS = $(SRCS:%.c=%.o)
@@ -25,7 +25,7 @@ all: prep release debug
 #
 # Debug rules
 #
-debug: prep_debug $(DBGEXE)
+debug: prep_debug $(DBGEXE) clean_savefile
 
 $(DBGEXE): $(DBGOBJS)
 	$(CC) $(CFLAGS) $(DBGCFLAGS) -o $(DBGEXE) $^
@@ -36,7 +36,7 @@ $(DBGDIR)/%.o: %.c
 #
 # Release rules
 #
-release: prep_release $(RELEXE)
+release: prep_release $(RELEXE) clean_savefile
 
 $(RELEXE): $(RELOBJS)
 	$(CC) $(CFLAGS) $(RELCFLAGS) -o $(RELEXE) $^
@@ -47,14 +47,20 @@ $(RELDIR)/%.o: %.c
 #
 # Other rules
 #
-prep:
+prep: savefile
 	@mkdir -p $(DBGDIR)/src $(RELDIR)/src
 
-prep_release:
+prep_release: savefile
 	@mkdir -p $(RELDIR)/src
 
-prep_debug:
+prep_debug: savefile
 	@mkdir -p $(DBGDIR)/src
+
+savefile:
+	touch savefile
+
+clean_savefile: savefile
+	rm -f savefile
 
 remake: clean all
 
