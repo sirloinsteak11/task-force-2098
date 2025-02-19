@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <cjson/cJSON.h>
-
 #include "game.h"
 
 int main(int argc, char* argv[]) {
