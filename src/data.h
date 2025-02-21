@@ -1,3 +1,11 @@
+/*
+
+    data - handles all game data and save file systems and algorithms
+
+*/
+
+
+
 #ifndef DATA_H
 #define DATA_H
 

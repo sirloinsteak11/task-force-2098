@@ -74,6 +74,26 @@ int load_save_data(char* filename, PlayerData* player_data) {
     }
 }
 
+int save_data(PlayerData* player_data) {
+    FILE* savefile = fopen(DEFAULT_SAVE, "wb");
+
+    if (savefile != NULL) {
+        fwrite(&player_data->name_length, sizeof(int), 1, savefile);
+        fwrite(&player_data->rank_length, sizeof(int), 1, savefile);
+        fwrite(player_data->team_name, sizeof(char), strlen(player_data->team_name) + 1, savefile);
+        fwrite(player_data->rank, sizeof(char), strlen(player_data->rank) + 1, savefile);
+        fwrite(&player_data->level, sizeof(int), 1, savefile);
+        fwrite(&player_data->exp, sizeof(int), 1, savefile);
+        fwrite(player_data->soldier_roster, sizeof(Soldier), ROSTER_LENGTH, savefile);
+        
+        fclose(savefile);
+        return 1;
+    } else {
+        fclose(savefile);
+        return 0;
+    }
+}
+
 void init_roster(Soldier* roster_array) {
 
     SoldierNode* soldier_roster_list = (SoldierNode*)malloc(sizeof(SoldierNode));

@@ -1,3 +1,13 @@
+/*
+
+
+    helper - helper and miscellaenous functions
+
+
+*/
+
+
+
 #ifndef HELPER_H
 #define HELPER_H
 

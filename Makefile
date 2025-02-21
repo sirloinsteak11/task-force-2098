@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra
 
 SRCS = $(wildcard src/*.c)
 OBJS = $(SRCS:%.c=%.o)
-EXE  = game
+EXE  = main
 
 DBGDIR = debug
 DBGEXE = $(DBGDIR)/$(EXE)_debug
