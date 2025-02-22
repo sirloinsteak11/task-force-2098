@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
         printf("Loaded Data\n");
         printf("-----------\n");
         printf("%s\n", player_data->team_name);
-        printf("%s\n", player_data->rank);
+        printf("%s %s\n", player_data->rank, player_data->cmdr_name);
         printf("Level %d\n", player_data->level);
     }
 

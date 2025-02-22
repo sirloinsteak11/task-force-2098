@@ -9,6 +9,7 @@ int create_save_data(Soldier* soldier_array, PlayerData* player_data) {
 
     player_data ->rank = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
     player_data->team_name = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
+    player_data->cmdr_name = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
 
     char* team_name_input = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
     init_roster(soldier_array);
@@ -23,21 +24,35 @@ int create_save_data(Soldier* soldier_array, PlayerData* player_data) {
     free(team_name_input);
     team_name_input = NULL;
 
+    char* cmdr_name_input = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
+    printf("Enter Commander Name... ");
+    strcpy(cmdr_name_input, "ZERO");
+    printf("%s\n", cmdr_name_input);
+
+    player_data->cmdr_name = alloc_string(cmdr_name_input);
+    free(cmdr_name_input);
+    cmdr_name_input = NULL;
+
+
     player_data->soldier_roster = soldier_array;
     player_data->exp = 0;
     player_data->level = 0;
     player_data->rank = "LT CMDR";
     player_data->name_length = strlen(player_data->team_name);
     player_data->rank_length = strlen(player_data->rank);
+    player_data->cmdr_length = strlen(player_data->cmdr_name);
 
     if (savefile != NULL) {
         fwrite(&player_data->name_length, sizeof(int), 1, savefile);
         fwrite(&player_data->rank_length, sizeof(int), 1, savefile);
-        fwrite(player_data->team_name, sizeof(char), strlen(player_data->team_name) + 1, savefile);
-        fwrite(player_data->rank, sizeof(char), strlen(player_data->rank) + 1, savefile);
+        fwrite(&player_data->cmdr_length, sizeof(int), 1, savefile);
+
+        fwrite(player_data->team_name, sizeof(char), player_data->name_length + 1, savefile);
+        fwrite(player_data->rank, sizeof(char), player_data->rank_length + 1, savefile);
         fwrite(&player_data->level, sizeof(int), 1, savefile);
         fwrite(&player_data->exp, sizeof(int), 1, savefile);
         fwrite(player_data->soldier_roster, sizeof(Soldier), ROSTER_LENGTH, savefile);
+        fwrite(player_data->cmdr_name, sizeof(char), player_data->cmdr_length + 1, savefile);
         
         fclose(savefile);
         return 1;
@@ -54,9 +69,11 @@ int load_save_data(char* filename, PlayerData* player_data) {
     if (savefile != NULL) {
         fread(&player_data->name_length, sizeof(int), 1, savefile);
         fread(&player_data->rank_length, sizeof(int), 1, savefile);
+        fread(&player_data->cmdr_length, sizeof(int), 1, savefile);
 
         player_data->team_name = (char*)malloc(player_data->name_length+1 * sizeof(char));
         player_data->rank = (char*)malloc(player_data->rank_length+1 * sizeof(char));
+        player_data->cmdr_name = (char*)malloc(player_data->cmdr_length+1 * sizeof(char));
 
         fread(player_data->team_name, sizeof(char), player_data->name_length + 1, savefile);
         fread(player_data->rank, sizeof(char), player_data->rank_length + 1, savefile);
@@ -65,6 +82,8 @@ int load_save_data(char* filename, PlayerData* player_data) {
 
         player_data->soldier_roster = (Soldier*)malloc(ROSTER_LENGTH * sizeof(Soldier));
         fread(player_data->soldier_roster, sizeof(Soldier), ROSTER_LENGTH, savefile);
+
+        fread(player_data->cmdr_name, sizeof(char), player_data->cmdr_length + 1, savefile);
 
         fclose(savefile);
         return 1;
