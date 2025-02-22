@@ -26,5 +26,6 @@ typedef struct {
 } Contract;
 
 void main_loop();
+void intro();
 
 #endif

@@ -39,7 +39,8 @@ int main(int argc, char* argv[]) {
         printf("Level %d\n", player_data->level);
     }
 
-    main_loop();
+    intro();
+    //main_loop();
 
     return 0;
 }
