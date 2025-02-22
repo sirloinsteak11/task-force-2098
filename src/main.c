@@ -39,9 +39,9 @@ int main(int argc, char* argv[]) {
         printf("Level %d\n", player_data->level);
     }
 
-    intro_text();
+    //intro_text();
     write_text("For a complete list of commands, type \"help\"\n", 45, 0);
-    main_loop();
+    main_loop(player_data);
 
     return 0;
 }

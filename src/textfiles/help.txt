@@ -1,0 +1,7 @@
+help - displays this string of messages
+profile - displays your profile
+contracts - displays contract board
+shop - displays shop page
+barracks - configure your team's roster as well as your soldiers armor and weapons
+exit - save and exit the game
+exit! - skip save and exit
