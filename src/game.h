@@ -26,6 +26,7 @@ typedef struct {
 } Contract;
 
 void main_loop();
-void intro();
+void intro_text();
+void write_text(char *text, int len, int cinematic);
 
 #endif
