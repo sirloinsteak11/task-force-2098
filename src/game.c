@@ -17,7 +17,7 @@
 
 void main_loop() {
     for (;;) {
-        printf("%s %s")
+        printf("%s %s");
     }
 }
 
