@@ -34,7 +34,8 @@ typedef struct soldier_node{
 
 int create_save_data(Soldier* soldier_array, PlayerData* player_data);
 int load_save_data(char* filename, PlayerData* player_data);
-void init_roster(Soldier* roster_array);
+int save_data(PlayerData *player_data);
+void init_roster(Soldier *roster_array);
 SoldierNode* create_soldier_list(SoldierNode* soldier_head);
 Soldier* create_soldier(Soldier* soldier);
 void print_array(Soldier* roster_array);
