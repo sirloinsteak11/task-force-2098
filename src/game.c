@@ -15,32 +15,58 @@
 #define SHORT_PAUSE 25 * 1000
 #define LONG_PAUSE 750 * 1000
 
+int in_prompt() {
+    printf("%s %s $> ", player_data->rank, player_data->cmdr_name);
+    return 1;
+}
+
 void main_loop(PlayerData* player_data) {
     char input_buffer[256];
 
+    while (in_prompt() && fgets(input_buffer, 256, stdin) != EOF) {
+        if (process_input(input_buffer) == 1) {
+            save_data(player_data);
+            break;
+        }
+        memset(input_buffer, 0, sizeof(input_buffer));
+    }
+
+    /*
     for (;;) {
-        printf("%s %s$> ", player_data->rank, player_data->cmdr_name);
-        fgets(input_buffer, 256, stdin);
+        
         //write_text(input_buffer, strlen(input_buffer), 0);
         if (process_input(input_buffer) == 1) {
             save_data(player_data);
             break;
         }
-    }
+    }*/
 }
 
 int process_input(char* input) {
-    if (strcmp(input, "help") == 0) {
-        file_to_text("intro.txt");
+    if (strcmp(input, "help\n") == 0) {
+        file_to_text("help.txt");
     }
-    if (strcmp(input, "exit") == 0) {
+    if (strcmp(input, "exit\n") == 0) {
         write_text("saving and exiting...", 22, 1);
+        write_text("goodbye", 8, 1);
         return 1;
     }
     return 0;
 }
 
 void intro_text() {
+    char skip_intro_input[256];
+    write_text("Do you wish to skip the intro? (y/n)", 37, 0);
+    if (fgets(skip_intro_input, 256, stdin) == NULL) {
+        perror("fgets");
+        printf("error occurred... skipping intro\n");
+        return;
+    }
+
+    if (strcmp(skip_intro_input, "y\n") == 0) {
+        return;
+    }
+
     FILE * introfile = fopen("src/textfiles/intro.txt", "r");
     char * line = NULL;
     size_t len = 0;
@@ -64,8 +90,10 @@ void intro_text() {
 }
 
 void file_to_text(char* filename) {
-    filename = strcat("src/textfiles/", filename);
-    FILE * file = fopen(filename, "r");
+    char* filepath = (char*)malloc(sizeof(char) * 256);
+    strcpy(filepath, "src/textfiles/");
+    strcat(filepath, filename);
+    FILE * file = fopen(filepath, "r");
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
@@ -79,12 +107,14 @@ void file_to_text(char* filename) {
         //printf("Retrieved line of length %zu:\n", read);
         //printf("%s", line);
 
-        write_text(line, read, 1);
+        write_text(line, read, 0);
     }
 
     fclose(file);
     if (line)
         free(line);
+
+    free(filepath);
 }
 
 void write_text(char* text, int len, int cinematic) {

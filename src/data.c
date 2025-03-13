@@ -2,22 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "data.h"
+#include "game.h"
 
-int create_save_data(Soldier* soldier_array, PlayerData* player_data) {
+int create_save_data(Soldier** soldier_array, PlayerData* player_data) {
     FILE* savefile = fopen(DEFAULT_SAVE, "wb");
 
-    player_data ->rank = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
-    player_data->team_name = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
-    player_data->cmdr_name = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
+    //player_data->rank = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
+    //layer_data->team_name = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
+    //player_data->cmdr_name = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
 
     char* team_name_input = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
     init_roster(soldier_array);
     printf("Enter Team Name...\n");
-    //scanf("%s", team_name_input);
-    strcpy(team_name_input, "Rogue Phoenix");
+    fgets(team_name_input, MAX_NAME_SIZE, stdin);
+    team_name_input[strcspn(team_name_input, "\n")] = '\0';
+    //strcpy(team_name_input, "Rogue Phoenix");
 
-    printf("%s\n", team_name_input);
+    //printf("%s\n", team_name_input);
     
     player_data->team_name = alloc_string(team_name_input);
     
@@ -26,18 +27,25 @@ int create_save_data(Soldier* soldier_array, PlayerData* player_data) {
 
     char* cmdr_name_input = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
     printf("Enter Commander Name... ");
-    strcpy(cmdr_name_input, "ZERO");
-    printf("%s\n", cmdr_name_input);
+    fgets(cmdr_name_input, MAX_NAME_SIZE, stdin);
+    cmdr_name_input[strcspn(cmdr_name_input, "\n")] = '\0';
 
     player_data->cmdr_name = alloc_string(cmdr_name_input);
     free(cmdr_name_input);
     cmdr_name_input = NULL;
 
+    char* rank_tmp = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
+    strcpy(rank_tmp, "LT CMDR");
+
+    player_data->rank = alloc_string(rank_tmp);
+    free(rank_tmp);
+    rank_tmp = NULL;
 
     player_data->soldier_roster = soldier_array;
     player_data->exp = 0;
     player_data->level = 0;
-    player_data->rank = "LT CMDR";
+    //strcpy(player_data->rank, "LT CMDR");
+    //player_data->rank = "LT CMDR";
     player_data->name_length = strlen(player_data->team_name);
     player_data->rank_length = strlen(player_data->rank);
     player_data->cmdr_length = strlen(player_data->cmdr_name);
@@ -51,7 +59,7 @@ int create_save_data(Soldier* soldier_array, PlayerData* player_data) {
         fwrite(player_data->rank, sizeof(char), player_data->rank_length + 1, savefile);
         fwrite(&player_data->level, sizeof(int), 1, savefile);
         fwrite(&player_data->exp, sizeof(int), 1, savefile);
-        fwrite(player_data->soldier_roster, sizeof(Soldier), ROSTER_LENGTH, savefile);
+        fwrite(player_data->soldier_roster, sizeof(Soldier*), ROSTER_LENGTH, savefile);
         fwrite(player_data->cmdr_name, sizeof(char), player_data->cmdr_length + 1, savefile);
         
         fclose(savefile);
@@ -80,8 +88,8 @@ int load_save_data(char* filename, PlayerData* player_data) {
         fread(&player_data->level, sizeof(int), 1, savefile);
         fread(&player_data->exp, sizeof(int), 1, savefile);
 
-        player_data->soldier_roster = (Soldier*)malloc(ROSTER_LENGTH * sizeof(Soldier));
-        fread(player_data->soldier_roster, sizeof(Soldier), ROSTER_LENGTH, savefile);
+        player_data->soldier_roster = (Soldier**)malloc(ROSTER_LENGTH * sizeof(Soldier*));
+        fread(player_data->soldier_roster, sizeof(Soldier*), ROSTER_LENGTH, savefile);
 
         fread(player_data->cmdr_name, sizeof(char), player_data->cmdr_length + 1, savefile);
 
@@ -103,7 +111,7 @@ int save_data(PlayerData* player_data) {
         fwrite(player_data->rank, sizeof(char), strlen(player_data->rank) + 1, savefile);
         fwrite(&player_data->level, sizeof(int), 1, savefile);
         fwrite(&player_data->exp, sizeof(int), 1, savefile);
-        fwrite(player_data->soldier_roster, sizeof(Soldier), ROSTER_LENGTH, savefile);
+        fwrite(player_data->soldier_roster, sizeof(Soldier*), ROSTER_LENGTH, savefile);
         
         fclose(savefile);
         return 1;
@@ -113,8 +121,9 @@ int save_data(PlayerData* player_data) {
     }
 }
 
-void init_roster(Soldier* roster_array) {
+void init_roster(Soldier** roster_array) {
 
+    /*
     SoldierNode* soldier_roster_list = (SoldierNode*)malloc(sizeof(SoldierNode));
     soldier_roster_list = create_soldier_list(soldier_roster_list);
 
@@ -132,17 +141,24 @@ void init_roster(Soldier* roster_array) {
         list_ptr = list_ptr->next;
     }
 
-    free(soldier_roster_list);
-    soldier_roster_list = NULL;
-    list_ptr = NULL;
+    //free(soldier_roster_list);
+    //soldier_roster_list = NULL;
+    //list_ptr = NULL;
+    */
+    
+
+    for (int i =0; i < ROSTER_LENGTH; i++) {
+        roster_array[i] = create_soldier(roster_array[i]);
+    }
 
     //priinting array
     printf("Soldier Roster Array:\n");
     for (int i = 0; i < ROSTER_LENGTH; i++) {
-        printf("%s | %d | %s\n", roster_array[i].name, roster_array[i].rating, roster_array[i].home_world);
+        printf("%s | %d | %s\n", roster_array[i]->name, roster_array[i]->rating, roster_array[i]->home_world);
     }
 }
 
+// most likely unneeded
 SoldierNode* create_soldier_list(SoldierNode* soldier_head) {
     
     soldier_head = (SoldierNode*)malloc(sizeof(SoldierNode));

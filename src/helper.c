@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "helper.h"
+#include "game.h"
 
 void print_array(Soldier* roster_array) {
     printf("Soldier Roster Array:\n");
