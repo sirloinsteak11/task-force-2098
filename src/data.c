@@ -4,7 +4,7 @@
 
 #include "game.h"
 
-int create_save_data(Soldier** soldier_array, PlayerData* player_data) {
+int create_save_data(PlayerData* player_data) {
     FILE* savefile = fopen(DEFAULT_SAVE, "wb");
 
     //player_data->rank = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
@@ -12,7 +12,7 @@ int create_save_data(Soldier** soldier_array, PlayerData* player_data) {
     //player_data->cmdr_name = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
 
     char* team_name_input = (char*)malloc(MAX_NAME_SIZE * sizeof(char));
-    init_roster(soldier_array);
+    init_roster(player_data->soldier_roster);
     printf("Enter Team Name...\n");
     fgets(team_name_input, MAX_NAME_SIZE, stdin);
     team_name_input[strcspn(team_name_input, "\n")] = '\0';
@@ -41,7 +41,7 @@ int create_save_data(Soldier** soldier_array, PlayerData* player_data) {
     free(rank_tmp);
     rank_tmp = NULL;
 
-    player_data->soldier_roster = soldier_array;
+    //player_data->soldier_roster = soldier_array;
     player_data->exp = 0;
     player_data->level = 0;
     //strcpy(player_data->rank, "LT CMDR");
@@ -151,6 +151,7 @@ void init_roster(Soldier** roster_array) {
         roster_array[i] = create_soldier(roster_array[i]);
     }
 
+    // TODO delete
     //priinting array
     printf("Soldier Roster Array:\n");
     for (int i = 0; i < ROSTER_LENGTH; i++) {

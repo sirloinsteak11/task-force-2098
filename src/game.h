@@ -1,6 +1,7 @@
 /*
 
     game - handles all gameplay and events code
+    public interfaces
 
 */
 
@@ -45,8 +46,7 @@ typedef struct soldier {
     
 } Soldier;
 
-void main_loop();
-int process_input(char *input);
+void game_init();
 void intro_text();
 void file_to_text(char *filename);
 void write_text(char *text, int len, int cinematic);
@@ -54,6 +54,7 @@ void write_text(char *text, int len, int cinematic);
 //helpers
 void print_array(Soldier* roster_array);
 char* alloc_string(char* string);
+//end helpers
 
 //savedata
 typedef struct player_data {
@@ -70,20 +71,28 @@ typedef struct player_data {
 
 } PlayerData;
 
+// most likely unneeded
 typedef struct soldier_node{
     Soldier* soldier;
     struct soldier_node* next;
 } SoldierNode;
 
-int create_save_data(Soldier** soldier_array, PlayerData* player_data);
+// savedata unfctions
+int create_save_data(PlayerData* player_data);
 int load_save_data(char* filename, PlayerData* player_data);
 int save_data(PlayerData *player_data);
 void init_roster(Soldier **roster_array);
 SoldierNode* create_soldier_list(SoldierNode* soldier_head);
 Soldier* create_soldier(Soldier* soldier);
 void print_array(Soldier* roster_array);
+// end savedata
 
-extern PlayerData* player_data;
-extern Soldier** soldier_array;
+// data interface
+void datainit();
+void set_player_data(PlayerData* player_data);
+PlayerData* get_player_data();
+void set_soldier_roster(Soldier** soldier_roster);
+Soldier** get_soldier_roster();
+//end data interface
 
 #endif

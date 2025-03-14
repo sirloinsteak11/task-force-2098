@@ -1,5 +1,6 @@
 help - displays this string of messages
 profile - displays your profile
+roster - displays your roster
 contracts - displays contract board
 shop - displays shop page
 barracks - configure your team's roster as well as your soldiers armor and weapons

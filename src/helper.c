@@ -27,3 +27,4 @@ char* alloc_string(char* string) {
 
     return dynam_string;
 }
+
